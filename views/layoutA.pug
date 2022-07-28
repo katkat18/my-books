@@ -1,0 +1,31 @@
+doctype html
+html
+  head
+    title= title
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width", initial-scale=1.0)
+    link(rel="stylesheet" type="text/css" href="bulma/bulma.css")
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    section(class="hero is-medium main-img")
+      div(class="hero-head")
+        nav(class="navbar")
+          div(class="container")
+            div(class="navbar-brand")
+              span(class="navbar-burger" data-target="navbarMenuHeroA")
+                span
+                span
+                span
+            div(id="navbarMenuHeroA" class="navbar-menu")
+              div(class="navbar-end")
+                a(class="navbar-item" href="/") Home
+                a(class="navbar-item" href="/main") About
+                a(class="navbar-item" href="/login") Sign In
+                a(class="navbar-item" href="/profile") Sign Up     
+
+        div(class="hero-body")
+          div(class="container has-text-centered")
+            p(class="title") MY BOOKS
+            p(class="subtitle") here to share the joys of reading
+    block content
+    script(defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js")

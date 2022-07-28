@@ -16,4 +16,9 @@ router.get('/main', function(req, res, next) {
   res.render('main', { title: 'Welcome User' });
 });
 
+/* GET profile page (after login) */
+router.get('/profile', function(req, res, next) {
+  res.render('profile', { title: 'User' });
+});
+
 module.exports = router;
