@@ -2,7 +2,12 @@ extends layoutB
 
 block content
     section(class="section is-small")
-        h1(class="title") Recent Books
+        nav(class="level")
+            div(class="level-left")
+                h1(class="title") Recent Books
+            div(class="level-right")
+                div(class="buttons")
+                    button(class="button is-primary") Add Review    
         div(class="columns is-multiline")
             div(class="column is-one-third")
                 div(class="card")

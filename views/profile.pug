@@ -1,4 +1,31 @@
 extends layoutB
 
 block content
-    h1 #{title} 
+    div(class="columns")
+        div(class="column is-one-quarter")
+            section(class="section")
+                figure(class="image is-128x128")
+                    img(class="is-rounded" src="images/IMG_0814.jpg")
+            section(class="section user-name")
+                h1(class="title user-name") User's Name    
+        div(class="column")
+            section(class="section")
+                nav(class="level")
+                    div(class="level-left")
+                        h1(class="title") USER'S BOOKS 
+                    div(class="level-right")    
+                        div(class="buttons")
+                            button(class="button is-primary") Add Review
+            div(class="card")
+                header(class="card-header")
+                    p(class="card-header-title") Book Title
+                div(class="card-content")
+                    div(class="columns")
+                        div(class="column is-one-quarter")
+                            figure(class="image is-128x128")
+                                img(src="images/IMG_3584.JPG")
+                        div(class="column")
+                            div(class="content")
+                                | This is the review of the book. It can be long or short;
+                                | write as much as you desire!
+    
