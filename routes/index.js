@@ -21,4 +21,9 @@ router.get('/profile', function(req, res, next) {
   res.render('profile', { title: 'User' });
 });
 
+/* GET signup page */
+router.get('/signup', function(req, res, next) {
+  res.render('signup', { title: 'Sign Up!' });
+});
+
 module.exports = router;

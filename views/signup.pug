@@ -1,0 +1,34 @@
+extends layoutB
+
+block content
+    section(class="section is-small")
+        div(class="columns")
+            div(class="column is-half is-offset-one-quarter")
+                h1(class="title") Sign Up
+                div(class="field")
+                    label(class="label") Email
+                    div(class="control")
+                        input(
+                            class="input"
+                            type="email"
+                            placeholder="Enter email"
+                        )
+                div(class="field")
+                    label(class="label") Username
+                    div(class="control")
+                        input(
+                            class="input" 
+                            type="text" 
+                            placeholder="Enter username"
+                        )
+                    div(class="field")
+                        label(class="label") Password
+                        div(class="control")
+                            input(
+                                class="input"
+                                type="password"
+                                placeholder="Enter password"
+                            )
+                    div(class="control")
+                        button(class="button is-primary") Sign up        
+    h1 #{title}
