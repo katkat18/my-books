@@ -4,22 +4,15 @@ block content
     section(class="section is-small")
         div(class="columns")
             div(class="column is-half is-offset-one-quarter")
-                form(class="box")
+                form(class="box" method="post" action="/user-signup")
                     h1(class="title") Sign Up
-                    div(class="field")
-                        label(class="label") Email
-                        div(class="control")
-                            input(
-                                class="input"
-                                type="email"
-                                placeholder="Enter email"
-                            )
                     div(class="field")
                         label(class="label") Username
                         div(class="control")
                             input(
                                 class="input" 
-                                type="text" 
+                                type="text"
+                                name="username" 
                                 placeholder="Enter username"
                             )
                         div(class="field")
@@ -28,8 +21,18 @@ block content
                                 input(
                                     class="input"
                                     type="password"
+                                    name="password"
                                     placeholder="Enter password"
+                                )                            
+                        div(class="field")
+                            label(class="label") Confirm Password
+                            div(class="control")
+                                input(
+                                    class="input"
+                                    type="password"
+                                    name="confirm_password"
+                                    placeholder="Confirm password"
                                 )
                         div(class="control")
-                            button(class="button is-primary") Sign up        
+                            button(class="button is-primary" type="submit") Sign up        
     h1 #{title}
