@@ -4,7 +4,7 @@ block content
     section(class="section is-small")
         div(class="columns")
             div(class="column is-half is-offset-one-quarter")
-                form(class="box")
+                form(class="box" method="post" action="/user-login")
                     h1(class="title") Sign in to My Books
                     div(class="field")
                         label(class="label") Username
@@ -13,6 +13,7 @@ block content
                                 class="input is-success"
                                 type="text"
                                 placeholder="Text input"
+                                name="username"
                             )
                             span(class="icon is-small is-left")
                                 i(class="fas fa-user")
@@ -27,6 +28,7 @@ block content
                                 class="input is-danger"
                                 type="password"
                                 placeholder="Enter password"
+                                name="password"
                             ) 
                             span(class="icon is-small is-left")
                                 i(class="fas fa-envelope")
@@ -36,6 +38,6 @@ block content
 
                     div(class="field is-grouped")
                         div(class="control")
-                            button(class="button is-success") Sign in           
+                            button(class="button is-success" type="submit") Sign in           
                     a(href="/signup") Not a member? Sign up here!
         h1 #{title}
