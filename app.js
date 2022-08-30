@@ -10,10 +10,10 @@ const usersRouter = require('./routes/users');
 
 const app = express();
 
-//passport authentication configuration 
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
+//passport authentication configuration
 const session = require('express-session');
+const LocalStrategy = require('passport-local').Strategy;
+const passport = require('passport');
 const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
 const schema = require('./routes/appSchema');
@@ -40,6 +40,7 @@ app.use(session({
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
+
 
 passport.use(new LocalStrategy(
   (username, password, cb) => {

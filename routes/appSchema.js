@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+/*
 mongoose.connect("mongodb+srv://katrinajamir:koolkatbooks@katjamjam.b7qkwy7.mongodb.net/?retryWrites=true&w=majority");
 
 const connection = mongoose.connection;
@@ -9,6 +10,7 @@ connection
 .on('close', () => console.log("database disconnected"))
 .on('error', (error) => console.log(error));
 
+*/
 const {model, Schema} = mongoose;
 
 const userSchema = new Schema({
