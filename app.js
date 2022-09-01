@@ -18,6 +18,7 @@ const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
 const schema = require('./routes/appSchema');
 const User = schema.User;
+const bcrypt = require('bcryptjs');
 
 mongoose.connect("mongodb+srv://katrinajamir:koolkatbooks@katjamjam.b7qkwy7.mongodb.net/?retryWrites=true&w=majority");
 
@@ -51,18 +52,24 @@ passport.use(new LocalStrategy(
         console.log(`there is an error: ${err}`);
         return cb(err); 
       }
-      console.log("checking no user");
+
       if(!user) {
-        console.log("no user found for authenticate");
+        console.log("no registered user found for authenticate");
         return cb(null, false); 
+      }else{
+        console.log(`password entered: ${password}`);
+        console.log(`password in DB: ${user.password}`);
+        bcrypt.compare(password, user.password, (err, isAMatch) => {
+          console.log("checking passwords");
+          if(isAMatch){
+            console.log(`password matches! Local Strategy success for user: ${user}`);
+            return cb(null, user);
+          }else{
+            console.log("passowords do not match. LS failed");
+            return cb(null, false);
+          }
+        });
       }
-      console.log("checking password");
-      if(user.password != password){ 
-        console.log("password does not match");
-        return cb(null, false); 
-      }
-      console.log(`Local strategy success for user: ${user}`);
-      return cb(null, user);
     });
   }
 ));

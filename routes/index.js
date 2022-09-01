@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const passport = require('passport');
+const bcrypt = require('bcryptjs');
 
 const mongoose = require('mongoose');
 const schema = require('./appSchema');
@@ -60,22 +61,61 @@ router.post('/user-signup', (req, res) => {
   console.log(`password: ${req.body.password}`);
   console.log(`confirm password: ${req.body.confirm_password}`);
   
-  const username = req.body.username;
-  const password = req.body.password;
-  const cPassword = req.body.confirm_password;
+  const username = req.body.username.trim();
+  const password = req.body.password.trim();
+  const cPassword = req.body.confirm_password.trim();
+
+  //create new user
+  // - check if username is already taken
+  // - check if password and confirm password match
+  // - save new user into database 
+ 
+  User.findOne({username: username}, (err, user) => {
+    if(err) {return next(err); }
+
+    //create a new user
+    if(!user) {
+      //check to see if password is the same as confirm password 
+      if(password != cPassword) {
+        console.log("passwords do not match!");
+        return res.redirect('/signup');
+        //pass error to view
+      }else{
+        //save new user into DB
+        const newUser = new User(req.body);
   
-  const newUser = new User(req.body);
+        bcrypt.genSalt(10, (err, salt) => {
+          if(err) { return next(err); }
 
+          bcrypt.hash(newUser.password, salt, (err, hash) => {
+            if(err) { return next(err); }
 
-  newUser.save()
-    .then((res) => {
-      console.log(res);
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+            newUser.password = hash;
+            //save user into DB
+            newUser.save((err, newUser) => {
+              if(err) { return next(err); }
+              req.logIn(newUser, (err) => {
+                if(err) { return next(err); }
+                console.log("successful registration...loging in");
+                return res.redirect('/main');
+              
+              });
 
-  res.redirect('/signup');
+            });
+          });
+        });
+
+      }
+
+    }else {
+     //there already is a user with that username 
+     console.log("that username is already taken!");
+     //send error to view
+     return res.redirect('/signup');
+    }
+
+  });
+
 });
 
 /* POST user login */
