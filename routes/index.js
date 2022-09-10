@@ -120,7 +120,6 @@ router.post('/user-signup', (req, res) => {
 
 /* POST user login */
 router.post('/user-login', passport.authenticate('local', {
-    //successRedirect: '/main',
     failureRedirect: '/login',
     failureMessage: "failed to login"
   }), (req, res) => {

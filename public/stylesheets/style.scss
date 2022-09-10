@@ -7,3 +7,21 @@
     background: url('../images/IMG_2347.jpg')center center; 
     background-size:cover; 
 }
+
+.stars {
+    font-size: 150%;
+}
+
+.stars > input[type="radio"] {
+    display: none;
+}
+
+.stars > input:checked + .fa-star {
+    color: red; 
+}
+
+
+
+.fa-star:hover {
+    opacity: 0.4;
+}
