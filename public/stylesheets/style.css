@@ -12,10 +12,11 @@
   font-size: 150%;
 }
 
+/*
 .stars > input[type="radio"] {
-  display: none;
+    display: none;
 }
-
+*/
 .stars > input:checked + .fa-star {
   color: red;
 }

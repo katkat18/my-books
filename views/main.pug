@@ -7,7 +7,7 @@ block content
                 h1(class="title") Recent Books
             div(class="level-right")
                 div(class="buttons")
-                    button(class="button is-primary") Add Review    
+                    button(class="js-modal-trigger button is-primary" data-target="upload-modal") Add Review    
         div(class="columns is-multiline")
             div(class="column is-one-third")
                 div(class="card")
@@ -123,32 +123,21 @@ block content
                         div(class="content")
                             | This is a long paragraph about the book im
                             | reading 
-    div(class="hello")
-        div(class="model-background")
+    div(id="upload-modal" class="modal")
+        div(class="modal-background")
         div(class="modal-card")
-            form(class="box" method="post" action="/add-review")
+            form(class="box" id="review-form" method="post" action="/add-review")
                 header(class="modal-card-head")
                     p(class="modal-card-title") Add Book Review
-                    button(class="delete" aria-label="close")
                 section(class="modal-card-body")
                     div(class="field")
                         label(class="label") Title
                             div(class="control")
-                                input(
-                                    class="input"
-                                    type="text"
-                                    placeholder="Book Title"
-                                    name="book-title"
-                                    )
+                                input(class="input" type="text" placeholder="Book Title" name="book-title")
                     div(class="field")
                         label(class="label") Author
                             div(class="control")
-                                input(
-                                    class="input"
-                                    type="text"
-                                    placeholder="Author Name"
-                                    name="author"
-                                )
+                                input(class="input" type="text" placeholder="Author Name" name="author")
                     div(class="file has-name")
                         label(class="file-label")
                             input(class="file-input" type="file" name="bookpic")
@@ -160,15 +149,15 @@ block content
                     div(class="field")
                         label(class="label") Rating
                             div(class="control stars")
-                                input(type="radio" name="rating" value="1" id="rating-1") 
-                                label(class="radio fa fa-star" for="rating-1")  
-                                input(type="radio" name="rating" value="2" id="rating-2")
+                                input(class="star-rating" type="radio" name="rating" value="1" id="rating-1") 
+                                label(class="radio fa fa-star" for="rating-1")
+                                input(class="star-rating" type="radio" name="rating" value="2" id="rating-2")
                                 label(class="radio fa fa-star" for="rating-2") 
-                                input(type="radio" name="rating" value="3" id="rating-3") 
+                                input(class="star-rating" type="radio" name="rating" value="3" id="rating-3") 
                                 label(class="radio fa fa-star" for="rating-3")
-                                input(type="radio" name="rating" value="4" id="rating-4" ) 
+                                input(class="star-rating" type="radio" name="rating" value="4" id="rating-4" ) 
                                 label(class="radio fa fa-star" for="rating-4")
-                                input(type="radio" name="rating" value="5" id="rating-5") 
+                                input(class="star-rating" type="radio" name="rating" value="5" id="rating-5") 
                                 label(class="radio fa fa-star" for="rating-5") 
                     div(class="field")
                         label(class="label") Comment
@@ -181,9 +170,6 @@ block content
 
 
                 footer(class="modal-card-foot")
-                    button(class="button is-success") Add Review
-                    button(class="button") Cancel 
-
-    script(src="/jquery/jquery.js")
-    script(src="/public/javascripts/main-script.js")    
+                    button(type="submit" class="button is-success") Add Review
+                    button(type="button" class="button" id="cancel-review") Cancel               
     h1 #{title} hello!
