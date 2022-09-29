@@ -7,6 +7,24 @@ const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const schema = require('./appSchema');
 const User = schema.User;
+const Book = schema.Book;
+
+const fs = require('fs');
+const multer = require('multer');
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    console.log("storage upload");
+    cb(null, __dirname + '/uploads');
+  },
+  filename: (req, file, cb) => {
+    console.log("in filename");
+    cb(null, file.fieldname+'_'+ Date.now());
+  }
+});
+
+const upload = multer({storage: storage});
+
 
 /* checks if user is still logged in  */
 function isLoggedIn(req, res, next) {
@@ -31,6 +49,7 @@ router.get('/login', (req, res, next) => {
 
 /* GET main page (after login) */
 router.get('/main', isLoggedIn, (req, res, next) => {
+  console.log(`current user: ${req.user.username}`);
   res.render('main', { title: `Welcome User`});
 });
 
@@ -139,5 +158,52 @@ router.post('/logout', (req, res) => {
 })
 
 /* POST upload image */
+router.post('/add-review', upload.single('book_pic'), (req, res, next) => {
+  console.log("in add review making book var");
+  console.log(`file name: ${req.file.filename}`);
+
+  let book = new Book({
+    title: req.body.book_title,
+    author: req.body.author,
+    rating: req.body.rating,
+    comment: req.body.comment, 
+    bookimg: {
+      data: fs.readFileSync(__dirname + '/uploads/' + req.file.filename),
+      contentType: 'image/png'
+    },
+    creator: req.user.username
+  });
+  
+  book.save()
+    .then(b =>{
+      console.log(`book saved: ${b.creator}`);
+      console.log(`curr logged in user: ${req.user.username}`);
+      User.findOne({username: req.user.username}, (err, user) => {
+        if(user){
+          console.log(`user found for book save: ${user}`);
+          user.books.push(b._id);
+          user.save(err => {
+            if(err) {return next(err); }
+            res.redirect('/main');
+          });
+        }else{
+          console.log('could not find user!');
+          res.redirect('/main');
+        }
+      });
+    })
+    .catch(err => {
+      return next(err);
+    });
+  /*
+  book.save((err, book) => {
+    if(err) { 
+        console.log(`error in saving book: ${err}`);
+        return next(err); 
+    }
+      res.redirect('/main');
+  });
+  */
+});
 
 module.exports = router;

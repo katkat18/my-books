@@ -29,11 +29,8 @@ const bookSchema = new Schema({
     rating: Number,
     comment: String,
     bookimg: {data: Buffer, contentType: String},
-    creator: {
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    }
+    creator: String
 }, {timeStamps: true});
 
 exports.User = model('User', userSchema);
-exports.Book = model('Books', bookSchema);
+exports.Book = model('Book', bookSchema);
