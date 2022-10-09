@@ -46,12 +46,26 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   //rating click event
-  $('.star-rating').on('change', function(){
+  
+
+
+
+  $('.star-rating').on('change', function(e){
       let val = $(this).val();
 
-      console.log(`the current rating: ${val}`);
+      //clear all star colors
+      for(let i=0; i < 5; i++){
+        $(`#star-${i+1}`).attr('src', '../images/star-img0.jpeg');
+      }
+
+      //set the appropriate star colors
+      for(let i=0; i < val; i++){
+        $(`#star-${i+1}`).attr('src', '../images/star-img1.jpeg');
+      }
+      console.log(`current value of stars: ${val}`);
 
   });
+
 
   $('.file-input').on('change', function() {
       let filename = $(this)[0].files[0].name;
@@ -62,7 +76,21 @@ document.addEventListener('DOMContentLoaded', () => {
   $('#cancel-review').on('click', function() {
       $('#review-form').trigger('reset');
       $('.file-name').html("");
+      
+      //clear all star colors
+      for(let i=0; i < 5; i++){
+        $(`#star-${i+1}`).attr('src', '../images/star-img0.jpeg');
+      }
+
     
       //$('.star-rating').prop('checked', false);
   });
+
+  //logout
+  $('#logout-btn').on('click', function() {
+    $('#logout-form').submit();
+  });
+
+  //stars 
+  
 

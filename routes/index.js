@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const path = require('path');
 
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
@@ -39,7 +40,18 @@ function isLoggedIn(req, res, next) {
 
 /* GET home page. */
 router.get('/', (req, res, next) => {
-  res.render('home', { title: 'My Books - Welcome!' });
+  Book.find({}, (err, books) => {
+    if(err) { return next(err);}
+
+    if(books) {
+      console.log("books were found!");
+      res.render('home', {title: 'My Books - Welcome!', 'user_books': books});
+
+    }else{
+      console.log("books not found - default screen is displayed");
+      res.render('home', { title: 'My Books - Welcome!' });
+    }
+  })
 });
 
 /* GET login form page. */
@@ -49,13 +61,55 @@ router.get('/login', (req, res, next) => {
 
 /* GET main page (after login) */
 router.get('/main', isLoggedIn, (req, res, next) => {
-  console.log(`current user: ${req.user.username}`);
-  res.render('main', { title: `Welcome User`});
+  //console.log(`current user: ${req.user}`);
+  //retrieve the current users
+  // find all users, use filter to find individual user (reduce the amount of queries to database)
+
+  Book.find({}, (err, books) => {
+    if(err) { return next(err);}
+
+    if(books) {
+      console.log("books were found!");
+      res.render('main', {title: `Welcome ${req.user.username}`, 'username': req.user.username, 'user_books': books});
+
+    }else{
+      console.log("books not found - default screen is displayed");
+      res.render('main', { title: `Welcome User`});
+    }
+  })
+  /*
+  Book.findOne({username: req.user.username}, (err, book) => {
+    if(err) {
+      console.log('something went wrong with finding user in main');
+      return next(err);
+    }
+    if(book){
+
+      console.log("user is found - rendering unique page");
+      //res.render('main', { title: `Welcome User`});
+      res.render('main', {title: `Welcome ${req.user.username}`, 'username': book.creator, 'profile_pic': book.creatorimg});
+    }else{
+      //put in an error page 
+      console.log('user is not found - default screen is displayed');
+      res.render('main', { title: `Welcome User`});
+    }
+  });*/
+  //res.render('main', { title: `Welcome User`});
 });
 
 /* GET profile page (after login) */
 router.get('/profile', (req, res, next) => {
-  res.render('profile', { title: 'User' });
+  Book.find({creator: req.user.username}, (err, books) => {
+    if(err) { return next(err); }
+
+    if(books) {
+      console.log('found books for profile!');
+      res.render('profile', {title: `${req.user.username}`, 'username': req.user.username, 'profile_pic': req.user.profileimg, 'user_books': books});
+    }else{
+      console.log("could not find books for profile");
+      res.render('profile', { title: `${req.user.username}` });
+    }
+  });
 });
 
 /* GET signup form page */
@@ -101,7 +155,17 @@ router.post('/user-signup', (req, res) => {
         //pass error to view
       }else{
         //save new user into DB
-        const newUser = new User(req.body);
+        //const newUser = new User(req.body);
+
+        
+        const newUser = new User({
+          username: req.body.username,
+          password: req.body.password,
+          profileimg: {
+            data: fs.readFileSync(path.resolve(__dirname, '../public/images/defaultpfp.JPG')),
+            contentType: 'image/jpg'
+          }
+        });
   
         bcrypt.genSalt(10, (err, salt) => {
           if(err) { return next(err); }
@@ -160,7 +224,7 @@ router.post('/logout', (req, res) => {
 /* POST upload image */
 router.post('/add-review', upload.single('book_pic'), (req, res, next) => {
   console.log("in add review making book var");
-  console.log(`file name: ${req.file.filename}`);
+  //console.log(`file name: ${req.file.filename}`);
 
   let book = new Book({
     title: req.body.book_title,
@@ -171,17 +235,23 @@ router.post('/add-review', upload.single('book_pic'), (req, res, next) => {
       data: fs.readFileSync(__dirname + '/uploads/' + req.file.filename),
       contentType: 'image/png'
     },
-    creator: req.user.username
+    creator: req.user.username,
+    //this is new
+    creatorimg: {
+      data: req.user.profileimg.data,
+      contentType: req.user.profileimg.contentType
+    }
   });
   
+  /*
   book.save()
-    .then(b =>{
+    .then(b => {
       console.log(`book saved: ${b.creator}`);
       console.log(`curr logged in user: ${req.user.username}`);
       User.findOne({username: req.user.username}, (err, user) => {
         if(user){
           console.log(`user found for book save: ${user}`);
-          user.books.push(b._id);
+          user.books.push(b);
           user.save(err => {
             if(err) {return next(err); }
             res.redirect('/main');
@@ -195,7 +265,8 @@ router.post('/add-review', upload.single('book_pic'), (req, res, next) => {
     .catch(err => {
       return next(err);
     });
-  /*
+    */
+
   book.save((err, book) => {
     if(err) { 
         console.log(`error in saving book: ${err}`);
@@ -203,7 +274,6 @@ router.post('/add-review', upload.single('book_pic'), (req, res, next) => {
     }
       res.redirect('/main');
   });
-  */
 });
 
 module.exports = router;

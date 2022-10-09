@@ -47,32 +47,31 @@ app.use(passport.session());
 passport.use(new LocalStrategy(
   (username, password, cb) => {
     console.log("in local strategy");
-    User.findOne({username: username}, (err, user) => {
-      console.log(`to authenticate user: ${user.username}`);
-      if(err) { 
-        console.log(`there is an error: ${err}`);
-        return cb(err); 
-      }
+    User.findOne({username: username})
+      .then((user) =>{
+        if(!user) {
+          console.log("no registered user found for authenticate");
+          return cb(null, false); 
+        }else{
+          console.log(`password entered: ${password}`);
+          console.log(`password in DB: ${user.password}`);
+          bcrypt.compare(password, user.password, (err, isAMatch) => {
+            console.log("checking passwords");
+            if(isAMatch){
+              console.log(`password matches! Local Strategy success for user: ${user}`);
+              return cb(null, user);
+            }else{
+              console.log("passowords do not match. LS failed");
+              return cb(null, false);
+            }
+          });
+        }
 
-      if(!user) {
-        console.log("no registered user found for authenticate");
-        return cb(null, false); 
-      }else{
-        console.log(`password entered: ${password}`);
-        console.log(`password in DB: ${user.password}`);
-        bcrypt.compare(password, user.password, (err, isAMatch) => {
-          console.log("checking passwords");
-          if(isAMatch){
-            console.log(`password matches! Local Strategy success for user: ${user}`);
-            return cb(null, user);
-          }else{
-            console.log("passowords do not match. LS failed");
-            return cb(null, false);
-          }
-        });
-      }
-    });
+      }).catch((err) =>{
+        done(err);
+      });
   }
+  
 ));
 
 //sessions
@@ -111,6 +110,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/bulma', express.static(__dirname + '/node_modules/bulma/css/'));
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist/'));
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -4,31 +4,11 @@ block content
     section(class="section is-small")
         nav(class="level")
             div(class="level-left")
-                h1(class="title") Recent Books
+                h1(class="title") Welcome, #{username}
             div(class="level-right")
                 div(class="buttons")
                     button(class="js-modal-trigger button is-primary" data-target="upload-modal") Add Review    
         div(class="columns is-multiline")
-            div(class="column is-one-third")
-                div(class="card")
-                    div(class="card-content")
-                        div(class="media")
-                            div(class="media-left")
-                                figure(class="image is-48x48")
-                                    img(class="is-rounded" src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image")
-                            div(class="media-content")
-                                p(class="title is-6") Katrina JamJam
-                                //p(class="subtitle is-8") @katkat
-                    div(class="card-image")
-                        figure(class="image is-4by3")
-                            img(src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image")
-                    div(class="card-content")
-                        p(class="title is-4") Harry Potter and the Goblet of Fire
-                        p(class="subtitle is-6") J.K. Rowling
-                        div(class="content")
-                            | This is a long paragraph about the book im
-                            | reading
-
             div(class="column is-one-third")
                 div(class="card")
                     div(class="card-content")
@@ -68,6 +48,31 @@ block content
     section(class="section is-small")
         h1(class="title") All Books
         div(class="columns is-multiline")
+        
+            each book in user_books
+                div(class="column is-one-third")
+                    div(class="card")
+                        div(class="card-content")
+                            div(class="media")
+                                div(class="media-left")
+                                    figure(class="image is-48x48")
+                                        img(class="is-rounded" src="data:" + book.creatorimg.contentType + ";base64," + book.creatorimg.data.toString('base64') alt="Default image")
+                                div(class="media-content")
+                                    p(class="title is-6") #{book.creator}
+                                    //p(class="subtitle is-8") @katkat
+                        div(class="card-image")
+                            figure(class="image is-4by3")
+                                img(src="data:" + book.bookimg.contentType + ";base64," + book.bookimg.data.toString('base64'))
+                        div(class="card-content")
+                            p(class="title is-4") #{book.title}
+                            p(class="subtitle is-6") #{book.author}
+                            div(class="main-stars columns is-gapless is-mobile")
+                                - for(var i=0; i< book.rating; i++) {
+                                    div(class="column is-narrow")
+                                        img(class="image is-24x24" src="../images/star-img1.jpeg")
+                                - }
+                            div(class="content") #{book.comment}
+            
             div(class="column is-one-third")
                 div(class="card")
                     div(class="card-content")
@@ -148,17 +153,22 @@ block content
                             span(class="file-name")
                     div(class="field")
                         label(class="label") Rating
-                            div(class="control stars")
-                                input(class="star-rating" type="radio" name="rating" value="1" id="rating-1") 
-                                label(class="radio fa fa-star" for="rating-1")
-                                input(class="star-rating" type="radio" name="rating" value="2" id="rating-2")
-                                label(class="radio fa fa-star" for="rating-2") 
-                                input(class="star-rating" type="radio" name="rating" value="3" id="rating-3") 
-                                label(class="radio fa fa-star" for="rating-3")
-                                input(class="star-rating" type="radio" name="rating" value="4" id="rating-4" ) 
-                                label(class="radio fa fa-star" for="rating-4")
-                                input(class="star-rating" type="radio" name="rating" value="5" id="rating-5") 
-                                label(class="radio fa fa-star" for="rating-5") 
+                            div(class="control form-stars columns is-gapless is-mobile")
+                                input(class="star-rating" id="rating-1" type="radio" name="rating" value="1") 
+                                label(for="rating-1")
+                                    img(class="star-img image is-32x32" id="star-1" src="../images/star-img0.jpeg")
+                                input(class="star-rating" id="rating-2" type="radio" name="rating" value="2")
+                                label(for="rating-2") 
+                                    img(class="star-img image is-32x32" id="star-2" src="../images/star-img0.jpeg")
+                                input(class="star-rating" id="rating-3" type="radio" name="rating" value="3") 
+                                label(for="rating-3")
+                                    img(class="star-img image is-32x32" id="star-3" src="../images/star-img0.jpeg")
+                                input(class="star-rating" id="rating-4" type="radio" name="rating" value="4") 
+                                label(for="rating-4")
+                                    img(class="star-img image is-32x32" id="star-4" src="../images/star-img0.jpeg")
+                                input(class="star-rating" id="rating-5" type="radio" name="rating" value="5")
+                                label(for="rating-5") 
+                                    img(class="star-img image is-32x32" id="star-5" src="../images/star-img0.jpeg") 
                     div(class="field")
                         label(class="label") Comment
                             div(class="control")

@@ -2,8 +2,8 @@ extends layoutA
 
 block content
   section(class="section is-medium")
-    h1(class="title") BOOKS GO HERE
-    h2(class="subtitle") The books that have been shared
+    h1(class="title") Can't decide what to read next?
+    h2(class="subtitle") Check out what others have to say about their recent reads
     div(class="columns is-multiline")
       div(class="column is-one-third")
         a(href="/book")
@@ -25,7 +25,29 @@ block content
               div(class="content")
                 | This is a long paragraph about the book im
                 | reading
-
+      each book in user_books
+          div(class="column is-one-third")
+              div(class="card")
+                  div(class="card-content")
+                      div(class="media")
+                          div(class="media-left")
+                              figure(class="image is-48x48")
+                                  img(class="is-rounded" src="data:" + book.creatorimg.contentType + ";base64," + book.creatorimg.data.toString('base64') alt="Default image")
+                          div(class="media-content")
+                              p(class="title is-6") #{book.creator}
+                              //p(class="subtitle is-8") @katkat
+                  div(class="card-image")
+                      figure(class="image is-4by3")
+                          img(src="data:" + book.bookimg.contentType + ";base64," + book.bookimg.data.toString('base64'))
+                  div(class="card-content")
+                      p(class="title is-4") #{book.title}
+                      p(class="subtitle is-6") #{book.author}
+                      div(class="main-stars columns is-gapless is-mobile")
+                          - for(var i=0; i< book.rating; i++) {
+                              div(class="column is-narrow")
+                                  img(class="image is-24x24" src="../images/star-img1.jpeg")
+                          - }
+                      div(class="content") #{book.comment}
       div(class="column is-one-third")
         div(class="card")
           div(class="card-content")
@@ -34,7 +56,7 @@ block content
                 figure(class="image is-48x48")
                   img(class="is-rounded" src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image")
               div(class="media-content")
-                p(class="title is-6") Katrina JamJam
+                p(class="title is-6") katjam
           div(class="card-image")
             figure(class="image is-4by3")
               img(src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image")

@@ -1,1 +1,1 @@
-.main-img{background:url("../images/IMG_2341.jpg") center center;background-size:cover}.sub-img{background:url("../images/IMG_2347.jpg") center center;background-size:cover}.stars{font-size:150%}.stars>input:checked+.fa-star{color:red}.fa-star:hover{opacity:0.4}
+.main-img{background:url("../images/IMG_2341.jpg") center center;background-size:cover}.sub-img{background:url("../images/IMG_2347.jpg") center center;background-size:cover}.star-img:hover{opacity:0.4}.form-stars>input[type="radio"]{display:none}

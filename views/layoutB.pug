@@ -22,8 +22,8 @@ html
                           a(class="navbar-item" href="/") Home
                           a(class="navbar-item" href="/main") About
                           a(class="navbar-item" href="/login") Sign In
-                          form(method="post" action="/logout")
-                            button(class="navbar-item" type="submit") Logout
+                          form(id="logout-form" method="post" action="/logout")
+                          a(class="navbar-item" id="logout-btn" href="#") Logout
     block content
     script(defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js")
     script(src="/jquery/jquery.js")

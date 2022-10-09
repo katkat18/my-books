@@ -17,10 +17,7 @@ const userSchema = new Schema({
     username: {type: String, unique:true, required:true},
     password: {type: String, required: true},
     profileimg: {data: Buffer, contentType: String},
-    books: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Book'
-    }]  
+    //books: []
 }, {timstamps: true});
 
 const bookSchema = new Schema({
@@ -29,7 +26,8 @@ const bookSchema = new Schema({
     rating: Number,
     comment: String,
     bookimg: {data: Buffer, contentType: String},
-    creator: String
+    creator: String,
+    creatorimg: {data: Buffer, contentType: String}
 }, {timeStamps: true});
 
 exports.User = model('User', userSchema);
