@@ -15,7 +15,7 @@ block content
                         h1(class="title") #{username}'s Books 
                     div(class="level-right")    
                         div(class="buttons")
-                            a(class="button is-primary" href="/addBook") Add Review
+                            button(class="js-modal-trigger button is-primary" data-target="upload-modal") Add Review
             
             div(class="card")
                 header(class="card-header")
@@ -32,7 +32,7 @@ block content
             each book in user_books
                 div(class="card")
                     header(class="card-header")
-                        p(class="card-header-title") #{book.title}
+                        p(class="card-header-title") #{username}
                     div(class="card-content")
                         div(class="columns")
                             div(class="column is-one-quarter")
@@ -40,7 +40,8 @@ block content
                                     img(src="data:" + book.bookimg.contentType + ";base64," + book.bookimg.data.toString('base64'))
                             div(class="column")
                                 div(class="content")
-                                    p(class="subtitle is-6") #{book.author}
+                                    p(class="title is-5") #{book.title}
+                                    p(class="subtitle is-6") by: #{book.author}
                                     div(class="main-stars columns is-gapless is-mobile is-narrow")
                                         - for(var i=0; i< book.rating; i++) {
                                             div(class="column is-narrow")
@@ -48,3 +49,58 @@ block content
                                         - }
                                 div(class="content")
                                     | #{book.comment}
+
+    div(id="upload-modal" class="modal")
+        div(class="modal-background")
+        div(class="modal-card")
+            form(class="box" id="review-form" method="post" action="/add-review" enctype="multipart/form-data")
+                header(class="modal-card-head")
+                    p(class="modal-card-title") Add Book Review
+                section(class="modal-card-body")
+                    div(class="field")
+                        label(class="label") Title
+                            div(class="control")
+                                input(class="input" type="text" placeholder="Book Title" name="book_title")
+                    div(class="field")
+                        label(class="label") Author
+                            div(class="control")
+                                input(class="input" type="text" placeholder="Author Name" name="author")
+                    div(class="file has-name")
+                        label(class="file-label")
+                            input(class="file-input" type="file" name="book_pic")
+                            span(class="file-cta")
+                                span(class="file-icon")
+                                    i(class="fas fa-upload")
+                                span(class="file-label") Upload book image  
+                            span(class="file-name")
+                    div(class="field")
+                        label(class="label") Rating
+                            div(class="control form-stars columns is-gapless is-mobile")
+                                input(class="star-rating" id="rating-1" type="radio" name="rating" value="1") 
+                                label(for="rating-1")
+                                    img(class="star-img image is-32x32" id="star-1" src="../images/star-img0.jpeg")
+                                input(class="star-rating" id="rating-2" type="radio" name="rating" value="2")
+                                label(for="rating-2") 
+                                    img(class="star-img image is-32x32" id="star-2" src="../images/star-img0.jpeg")
+                                input(class="star-rating" id="rating-3" type="radio" name="rating" value="3") 
+                                label(for="rating-3")
+                                    img(class="star-img image is-32x32" id="star-3" src="../images/star-img0.jpeg")
+                                input(class="star-rating" id="rating-4" type="radio" name="rating" value="4") 
+                                label(for="rating-4")
+                                    img(class="star-img image is-32x32" id="star-4" src="../images/star-img0.jpeg")
+                                input(class="star-rating" id="rating-5" type="radio" name="rating" value="5")
+                                label(for="rating-5") 
+                                    img(class="star-img image is-32x32" id="star-5" src="../images/star-img0.jpeg") 
+                    div(class="field")
+                        label(class="label") Comment
+                            div(class="control")
+                                textarea(
+                                    class="textarea" 
+                                    placeholder="What is your opinion of the book?"
+                                    name="comment"
+                                )  
+
+
+                footer(class="modal-card-foot")
+                    button(type="submit" class="button is-success") Add Review
+                    button(type="button" class="button" id="cancel-review") Cancel 
