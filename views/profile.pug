@@ -30,25 +30,26 @@ block content
                                 | This is the review of the book. It can be long or short;
                                 | write as much as you desire!
             each book in user_books
-                div(class="card")
-                    header(class="card-header")
-                        p(class="card-header-title") #{username}
-                    div(class="card-content")
-                        div(class="columns")
-                            div(class="column is-one-quarter")
-                                figure(class="image is-128x128")
-                                    img(src="data:" + book.bookimg.contentType + ";base64," + book.bookimg.data.toString('base64'))
-                            div(class="column")
-                                div(class="content")
-                                    p(class="title is-5") #{book.title}
-                                    p(class="subtitle is-6") by: #{book.author}
-                                    div(class="main-stars columns is-gapless is-mobile is-narrow")
-                                        - for(var i=0; i< book.rating; i++) {
-                                            div(class="column is-narrow")
-                                                img(class="image is-16x16" src="../images/star-img1.jpeg")
-                                        - }
-                                div(class="content")
-                                    | #{book.comment}
+                a(class="review-link" href="/book" + book._id)
+                    div(class="card")
+                        header(class="card-header")
+                            p(class="card-header-title") #{username}
+                        div(class="card-content")
+                            div(class="columns")
+                                div(class="column is-one-quarter")
+                                    figure(class="image is-128x128")
+                                        img(src="data:" + book.bookimg.contentType + ";base64," + book.bookimg.data.toString('base64'))
+                                div(class="column")
+                                    div(class="content")
+                                        p(class="title is-5") #{book.title}
+                                        p(class="subtitle is-6") by: #{book.author}
+                                        div(class="main-stars columns is-gapless is-mobile is-narrow")
+                                            - for(var i=0; i< book.rating; i++) {
+                                                div(class="column is-narrow")
+                                                    img(class="image is-16x16" src="../images/star-img1.jpeg")
+                                            - }
+                                    div(class="content")
+                                        | #{book.comment}
 
     div(id="upload-modal" class="modal")
         div(class="modal-background")

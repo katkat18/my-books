@@ -51,27 +51,29 @@ block content
         
             each book in user_books
                 div(class="column is-one-third")
-                    div(class="card")
-                        div(class="card-content")
-                            div(class="media")
-                                div(class="media-left")
-                                    figure(class="image is-48x48")
-                                        img(class="is-rounded" src="data:" + book.creatorimg.contentType + ";base64," + book.creatorimg.data.toString('base64') alt="Default image")
-                                div(class="media-content")
-                                    p(class="title is-6") #{book.creator}
-                                    //p(class="subtitle is-8") @katkat
-                        div(class="card-image")
-                            figure(class="image is-4by3")
-                                img(src="data:" + book.bookimg.contentType + ";base64," + book.bookimg.data.toString('base64'))
-                        div(class="card-content")
-                            p(class="title is-4") #{book.title}
-                            p(class="subtitle is-6") #{book.author}
-                            div(class="main-stars columns is-gapless is-mobile")
-                                - for(var i=0; i< book.rating; i++) {
-                                    div(class="column is-narrow")
-                                        img(class="image is-24x24" src="../images/star-img1.jpeg")
-                                - }
-                            div(class="content") #{book.comment}
+                    a(class="review-link" href="/book" + book._id)
+                        div(class="card")
+                            div(class="card-content")
+                                div(class="media")
+                                    div(class="media-left")
+                                        figure(class="image is-48x48")
+                                            img(class="is-rounded" src="data:" + book.creatorimg.contentType + ";base64," + book.creatorimg.data.toString('base64') alt="Default image")
+                                    div(class="media-content")
+                                        p(class="title is-6") #{book.creator}
+                                        //p(class="subtitle is-8") @katkat
+                            div(class="card-image")
+                                figure(class="image is-4by3")
+                                    img(src="data:" + book.bookimg.contentType + ";base64," + book.bookimg.data.toString('base64'))
+                            div(class="card-content")
+                                p(class="title is-4") #{book.title}
+                                p(class="subtitle is-6") #{book.author}
+                                div(class="main-stars columns is-gapless is-mobile")
+                                    - for(var i=0; i< book.rating; i++) {
+                                        div(class="column is-narrow")
+                                            img(class="image is-24x24" src="../images/star-img1.jpeg")
+                                    - }
+                                div(class="content") #{book.comment}
+
             
             div(class="column is-one-third")
                 div(class="card")

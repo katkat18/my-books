@@ -43,20 +43,30 @@ router.get('/', (req, res, next) => {
   Book.find({}, (err, books) => {
     if(err) { return next(err);}
 
-    if(books) {
-      console.log("books were found!");
-      res.render('home', {title: 'My Books - Welcome!', 'user_books': books});
-
+    //check if a user is logged in
+    //redirect to main user page instead
+    if(req.isAuthenticated()){
+      res.redirect('/main');
     }else{
-      console.log("books not found - default screen is displayed");
-      res.render('home', { title: 'My Books - Welcome!' });
+      if(books) {
+        console.log("books were found!");
+        res.render('home', {title: 'My Books - Welcome!', 'user_books': books});
+  
+      }else{
+        console.log("books not found - default screen is displayed");
+        res.render('home', { title: 'My Books - Welcome!' });
+      }
     }
-  })
+  });
 });
 
 /* GET login form page. */
 router.get('/login', (req, res, next) => {
-  res.render('login', { title: 'Hello!' });
+  if(req.isAuthenticated()){
+    res.redirect('/main');
+  }else{
+    res.render('login', { title: 'Hello!' });
+  }
 });
 
 /* GET main page (after login) */
@@ -98,7 +108,7 @@ router.get('/main', isLoggedIn, (req, res, next) => {
 });
 
 /* GET profile page (after login) */
-router.get('/profile', (req, res, next) => {
+router.get('/profile', isLoggedIn, (req, res, next) => {
   Book.find({creator: req.user.username}, (err, books) => {
     if(err) { return next(err); }
 
@@ -114,17 +124,33 @@ router.get('/profile', (req, res, next) => {
 
 /* GET signup form page */
 router.get('/signup', (req, res, next) => {
-  res.render('signup', { title: 'Sign Up!' });
+  if(req.isAuthenticated()){
+    res.redirect('/main');
+  }else{
+    res.render('signup', { title: 'Sign Up!' });
+  }
+  
+});
+
+/* GET book page */
+router.get('/book:id', (req, res, next) => {
+  Book.findById(req.params.id, (err, book) => {
+    if(err) {return next(err)}
+
+    if(book){
+      console.log('book was found book page');
+      res.render('book', {title: `${book.creator}'s Review`, 'book': book});
+    }else{
+      console.log('could not find book page')
+      //add error page
+      res.render('error', { title: 'Error' });
+    }
+  });
 });
 
 /* GET book page */
 router.get('/book', (req, res, next) => {
-  res.render('book', { title: 'Book' });
-});
-
-/* GET book page */
-router.get('/addBook', (req, res, next) => {
-  res.render('addBook', { title: 'Add Book' });
+  res.render('book', { title: 'Add Book' });
 });
 
 /* POST user signup */

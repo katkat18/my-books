@@ -1,3 +1,4 @@
+
 .main-img { 
     background: url('../images/IMG_2341.jpg')center center; 
     background-size:cover; 
@@ -7,6 +8,8 @@
     background: url('../images/IMG_2347.jpg')center center; 
     background-size:cover; 
 }
+
+
 
 //form stars
 .star-img:hover {
@@ -19,3 +22,6 @@
 }
 
 
+.expand-review {
+    display: none;
+}

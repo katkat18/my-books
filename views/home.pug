@@ -6,7 +6,7 @@ block content
     h2(class="subtitle") Check out what others have to say about their recent reads
     div(class="columns is-multiline")
       div(class="column is-one-third")
-        a(href="/book")
+        a(href="/profile")
           div(class="card")
             div(class="card-content")
               div(class="media")
@@ -27,6 +27,7 @@ block content
                 | reading
       each book in user_books
           div(class="column is-one-third")
+            a(class="review-link" href="/book" + book._id)
               div(class="card")
                   div(class="card-content")
                       div(class="media")

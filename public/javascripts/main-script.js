@@ -114,5 +114,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   //stars 
+
+  //review card go back button
+  $('.go-back-btn').on('click', function() {
+    history.back();
+  });
   
 
