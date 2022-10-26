@@ -5,7 +5,6 @@ const path = require('path');
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
 
-const mongoose = require('mongoose');
 const schema = require('./appSchema');
 const User = schema.User;
 const Book = schema.Book;
@@ -15,137 +14,101 @@ const multer = require('multer');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    console.log("storage upload");
     cb(null, __dirname + '/uploads');
   },
   filename: (req, file, cb) => {
-    console.log("in filename");
     cb(null, file.fieldname+'_'+ Date.now());
   }
 });
 
 const upload = multer({storage: storage});
 
-
-/* checks if user is still logged in  */
-function isLoggedIn(req, res, next) {
-  console.log(`user is authenticated? ${req.isAuthenticated()}`);
+/* check if user is logged in; prevent users from accessing pages without proper authentication */
+function checkLogin(req, res, next) {
   if(req.isAuthenticated()) {
-    console.log("user is logged in");
     return next();
-  }else
-  console.log("user is not logged in");
+  }else{
   res.redirect('/login');
+  }
 }
 
-/* GET home page. */
-router.get('/', (req, res, next) => {
-  Book.find({}, (err, books) => {
-    if(err) { return next(err);}
+/* checks if user is logged in. If so, redirect accordingly to user main page */
+function isLoggedIn (req, res, next) {
+  if(req.isAuthenticated()){
+    res.redirect('/main');
+  }else{
+    return next();
+  }
+}
 
-    //check if a user is logged in
-    //redirect to main user page instead
-    if(req.isAuthenticated()){
-      res.redirect('/main');
+router.get('/', isLoggedIn, async (req, res, next) => {
+  try{
+    const books = await Book.find({});
+
+    if(books){
+      res.render('home', {title: 'My Books - Welcome!', 'user_books': books});
     }else{
-      if(books) {
-        console.log("books were found!");
-        res.render('home', {title: 'My Books - Welcome!', 'user_books': books});
-  
-      }else{
-        console.log("books not found - default screen is displayed");
-        res.render('home', { title: 'My Books - Welcome!' });
-      }
+      res.render('home', { title: 'My Books - Welcome!' });
     }
-  });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 /* GET login form page. */
-router.get('/login', (req, res, next) => {
-  if(req.isAuthenticated()){
-    res.redirect('/main');
-  }else{
-    res.render('login', { title: 'Hello!' });
-  }
+router.get('/login', isLoggedIn, (req, res, next) => {
+  res.render('login', { title: 'Hello!' });
 });
 
 /* GET main page (after login) */
-router.get('/main', isLoggedIn, (req, res, next) => {
-  //console.log(`current user: ${req.user}`);
-  //retrieve the current users
-  // find all users, use filter to find individual user (reduce the amount of queries to database)
-
-  Book.find({}, (err, books) => {
-    if(err) { return next(err);}
+router.get('/main', checkLogin, async (req, res, next) => {
+  try {
+    const books = await Book.find({});
 
     if(books) {
-      console.log("books were found!");
       res.render('main', {title: `Welcome ${req.user.username}`, 'username': req.user.username, 'user_books': books});
-
     }else{
-      console.log("books not found - default screen is displayed");
       res.render('main', { title: `Welcome User`});
     }
-  })
-  /*
-  Book.findOne({username: req.user.username}, (err, book) => {
-    if(err) {
-      console.log('something went wrong with finding user in main');
-      return next(err);
-    }
-    if(book){
-
-      console.log("user is found - rendering unique page");
-      //res.render('main', { title: `Welcome User`});
-      res.render('main', {title: `Welcome ${req.user.username}`, 'username': book.creator, 'profile_pic': book.creatorimg});
-    }else{
-      //put in an error page 
-      console.log('user is not found - default screen is displayed');
-      res.render('main', { title: `Welcome User`});
-    }
-  });*/
-  //res.render('main', { title: `Welcome User`});
+  } catch(err) {
+    return next(err);
+  }
 });
 
 /* GET profile page (after login) */
-router.get('/profile', isLoggedIn, (req, res, next) => {
-  Book.find({creator: req.user.username}, (err, books) => {
-    if(err) { return next(err); }
+router.get('/profile', checkLogin, async(req, res, next) => {
+  try {
+    const books = await Book.find({creator: req.user.username});
 
     if(books) {
-      console.log('found books for profile!');
       res.render('profile', {title: `${req.user.username}`, 'username': req.user.username, 'profile_pic': req.user.profileimg, 'user_books': books});
     }else{
-      console.log("could not find books for profile");
       res.render('profile', { title: `${req.user.username}` });
     }
-  });
+  }catch(err){
+    return next(err);
+  }
 });
 
 /* GET signup form page */
-router.get('/signup', (req, res, next) => {
-  if(req.isAuthenticated()){
-    res.redirect('/main');
-  }else{
-    res.render('signup', { title: 'Sign Up!' });
-  }
-  
+router.get('/signup', isLoggedIn, (req, res) => {
+  res.render('signup', { title: 'Sign Up!' });
 });
 
 /* GET book page */
-router.get('/book:id', (req, res, next) => {
-  Book.findById(req.params.id, (err, book) => {
-    if(err) {return next(err)}
+router.get('/book:id', async(req, res, next) => {
+  try {
+    const book = await Book.findById(req.params.id);
 
     if(book){
-      console.log('book was found book page');
       res.render('book', {title: `${book.creator}'s Review`, 'book': book});
     }else{
-      console.log('could not find book page')
       //add error page
       res.render('error', { title: 'Error' });
     }
-  });
+  }catch(err){
+    return next(err);
+  }
 });
 
 /* GET book page */
@@ -155,7 +118,7 @@ router.get('/book', (req, res, next) => {
 
 /* POST user signup */
 /*Simple sign up. Will add validation later */
-router.post('/user-signup', (req, res) => {
+router.post('/user-signup', async(req, res) => {
   console.log(`username: ${req.body.username}`);
   console.log(`password: ${req.body.password}`);
   console.log(`confirm password: ${req.body.confirm_password}`);
@@ -164,26 +127,17 @@ router.post('/user-signup', (req, res) => {
   const password = req.body.password.trim();
   const cPassword = req.body.confirm_password.trim();
 
-  //create new user
-  // - check if username is already taken
-  // - check if password and confirm password match
-  // - save new user into database 
- 
-  User.findOne({username: username}, (err, user) => {
-    if(err) {return next(err); }
-
-    //create a new user
-    if(!user) {
-      //check to see if password is the same as confirm password 
+  try {
+    //check if the user already exists
+    const user = await User.findOne({username: username});
+    //if no user is found, create a new user
+    if(!user){
+      //check if password is the same as confirm password 
       if(password != cPassword) {
         console.log("passwords do not match!");
         return res.redirect('/signup');
-        //pass error to view
       }else{
         //save new user into DB
-        //const newUser = new User(req.body);
-
-        
         const newUser = new User({
           username: req.body.username,
           password: req.body.password,
@@ -192,39 +146,28 @@ router.post('/user-signup', (req, res) => {
             contentType: 'image/jpg'
           }
         });
-  
-        bcrypt.genSalt(10, (err, salt) => {
+
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(newUser.password, salt);
+
+        //save user into DB
+        newUser.password = hash;
+        await newUser.save(newUser);
+        req.logIn(newUser, (err) => {
           if(err) { return next(err); }
-
-          bcrypt.hash(newUser.password, salt, (err, hash) => {
-            if(err) { return next(err); }
-
-            newUser.password = hash;
-            //save user into DB
-            newUser.save((err, newUser) => {
-              if(err) { return next(err); }
-              req.logIn(newUser, (err) => {
-                if(err) { return next(err); }
-                console.log("successful registration...loging in");
-                return res.redirect('/main');
-              
-              });
-
-            });
-          });
+          console.log("successful registration...loging in");
+          return res.redirect('/main');
         });
-
       }
-
     }else {
-     //there already is a user with that username 
-     console.log("that username is already taken!");
-     //send error to view
-     return res.redirect('/signup');
+       //there already is a user with that username 
+       console.log("that username is already taken!");
+       //send error to view
+       return res.redirect('/signup');
     }
-
-  });
-
+  }catch(err){
+    return next(err);
+  }
 });
 
 /* POST user login */
@@ -236,7 +179,7 @@ router.post('/user-login', passport.authenticate('local', {
   });
 
 /* POST logout */
-router.post('/logout', (req, res) => {
+router.post('/logout', async(req, res) => {
   req.logout((err) => {
     if(err) {
       console.log("failed to logout");
@@ -244,62 +187,33 @@ router.post('/logout', (req, res) => {
     }
     console.log("logging out");
     res.redirect('/');
-  })
-})
+  });
+});
 
 /* POST upload image */
-router.post('/add-review', upload.single('book_pic'), (req, res, next) => {
-  console.log("in add review making book var");
-  //console.log(`file name: ${req.file.filename}`);
-
-  let book = new Book({
-    title: req.body.book_title,
-    author: req.body.author,
-    rating: req.body.rating,
-    comment: req.body.comment, 
-    bookimg: {
-      data: fs.readFileSync(__dirname + '/uploads/' + req.file.filename),
-      contentType: 'image/png'
-    },
-    creator: req.user.username,
-    //this is new
-    creatorimg: {
-      data: req.user.profileimg.data,
-      contentType: req.user.profileimg.contentType
-    }
-  });
-  
-  /*
-  book.save()
-    .then(b => {
-      console.log(`book saved: ${b.creator}`);
-      console.log(`curr logged in user: ${req.user.username}`);
-      User.findOne({username: req.user.username}, (err, user) => {
-        if(user){
-          console.log(`user found for book save: ${user}`);
-          user.books.push(b);
-          user.save(err => {
-            if(err) {return next(err); }
-            res.redirect('/main');
-          });
-        }else{
-          console.log('could not find user!');
-          res.redirect('/main');
-        }
-      });
-    })
-    .catch(err => {
-      return next(err);
+router.post('/add-review', upload.single('book_pic'), async(req, res, next) => {
+  try {
+    const book = new Book({
+      title: req.body.book_title,
+      author: req.body.author,
+      rating: req.body.rating,
+      comment: req.body.comment, 
+      bookimg: {
+        data: fs.readFileSync(__dirname + '/uploads/' + req.file.filename),
+        contentType: 'image/png'
+      },
+      creator: req.user.username,
+      creatorimg: {
+        data: req.user.profileimg.data,
+        contentType: req.user.profileimg.contentType
+      }
     });
-    */
 
-  book.save((err, book) => {
-    if(err) { 
-        console.log(`error in saving book: ${err}`);
-        return next(err); 
-    }
-      res.redirect('/main');
-  });
+    await book.save()
+    res.redirect('/main');
+  }catch(err){
+    return next(err);
+  }
 });
 
 module.exports = router;

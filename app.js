@@ -46,17 +46,13 @@ app.use(passport.session());
 
 passport.use(new LocalStrategy(
   (username, password, cb) => {
-    console.log("in local strategy");
     User.findOne({username: username})
       .then((user) =>{
         if(!user) {
           console.log("no registered user found for authenticate");
           return cb(null, false); 
         }else{
-          console.log(`password entered: ${password}`);
-          console.log(`password in DB: ${user.password}`);
           bcrypt.compare(password, user.password, (err, isAMatch) => {
-            console.log("checking passwords");
             if(isAMatch){
               console.log(`password matches! Local Strategy success for user: ${user}`);
               return cb(null, user);
@@ -66,33 +62,23 @@ passport.use(new LocalStrategy(
             }
           });
         }
-
       }).catch((err) =>{
         done(err);
       });
   }
-  
 ));
 
 //sessions
 passport.serializeUser((user, cb) => {
-  console.log(`in serializer user id: ${user.id}`);
   cb(null,user._id);
 });
 
 passport.deserializeUser((id, cb) => {
-  console.log(`in deserialize user id: ${id}`);
   User.findById(id, (err, user) => {
     cb(err, user);
   });
 });
 
-/*
-app.use((req,res, next) => {
-  res.locals.isAuthenticated = req.isAuthenticated();
-  req.next();
-});
-*/
 app.set('trust proxy', 1);
 
 
