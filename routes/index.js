@@ -55,6 +55,34 @@ router.get('/', isLoggedIn, async (req, res, next) => {
   }
 });
 
+router.get('/search', async (req, res, next) => {
+  console.log(`search: ${req.query.search}`);
+
+  const query = req.query.search.toLowerCase().trim();
+
+  const results = await Book.find({
+      "$or": [
+        {title: query},
+        {author: query},
+        {creator: query}
+      ]
+  });
+
+  if(query.length === 0){
+    console.log(`string was empty`);
+    res.redirect('/');
+  
+  }else if(results.length > 0){
+    console.log(`results were found: ${results.length}`);
+    res.render('home', {title: 'My Books - Welcome!', 'user_books': results});
+    
+  }else{
+    console.log(`no results were found`);
+    res.render('home', { title: 'My Books - Welcome!', 'user_books': results, 'no_results': `Sorry, no results were found for your search: ${query}`});
+  }
+
+});
+
 /* GET login form page. */
 router.get('/login', isLoggedIn, (req, res, next) => {
   res.render('login', { title: 'Hello!' });
@@ -89,6 +117,22 @@ router.get('/profile', checkLogin, async(req, res, next) => {
     return next(err);
   }
 });
+
+/* GET edit profile page (after login) */
+router.get('/edit-books', checkLogin, async(req, res, next) => {
+  try {
+    const books = await Book.find({creator: req.user.username});
+
+    if(books) {
+      res.render('edit_profile_books', {title: `${req.user.username}`, 'username': req.user.username, 'profile_pic': req.user.profileimg, 'user_books': books});
+    }else{
+      res.render('edit_profile_books', { title: `${req.user.username}` });
+    }
+  }catch(err){
+    return next(err);
+  }
+});
+
 
 /* GET signup form page */
 router.get('/signup', isLoggedIn, (req, res) => {
@@ -188,6 +232,27 @@ router.post('/logout', async(req, res) => {
     console.log("logging out");
     res.redirect('/');
   });
+});
+
+/* POST delete review */
+router.post('/book/:id', async(req, res, next) => {
+  try {
+    console.log(`book to be deleted: ${req.params.id}`);
+    //const book = await Book.findById(req.params.id);
+    const result = await Book.deleteOne({_id: req.params.id});
+
+    if(result.deletedCount === 1){
+      console.log("Delete successful");
+      res.redirect('/edit-books');
+
+    }else{
+      console.log("Delete unsuccessful");
+      res.render('error', { title: 'Error' });
+    }
+
+  }catch(err){
+    return next(err);
+  }
 });
 
 /* POST upload image */

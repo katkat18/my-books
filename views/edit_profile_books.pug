@@ -12,16 +12,18 @@ block content
             section(class="section")
                 nav(class="level")
                     div(class="level-left")
-                        h1(class="title") #{username}'s Books 
+                        h1(class="title") #{username}'s Books
                     div(class="level-right")    
                         div(class="buttons")
-                            button(class="js-modal-trigger button is-primary" data-target="upload-modal") Add Review
-                            a(class="button" href="/edit-books") Edit
+                            a(class="button" href="/profile") Done
+                            //button(class="js-modal-trigger button is-primary" data-target="upload-modal") Add Review
             each book in user_books
                 a(class="review-link" href="/book" + book._id)
                     div(class="card")
                         header(class="card-header")
                             p(class="card-header-title") #{username}
+                            form(method="post" action="/book/" + book._id)
+                                button(type="submit" class="delete is-medium mt-3 mr-2")
                         div(class="card-content")
                             div(class="columns")
                                 div(class="column is-one-quarter")
