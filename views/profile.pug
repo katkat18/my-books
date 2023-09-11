@@ -25,7 +25,7 @@ block content
                         div(class="card-content")
                             div(class="columns")
                                 div(class="column is-one-quarter")
-                                    figure(class="image is-128x128")
+                                    figure(class="image is-4by5")
                                         img(src="data:" + book.bookimg.contentType + ";base64," + book.bookimg.data.toString('base64'))
                                 div(class="column")
                                     div(class="content")
@@ -42,7 +42,7 @@ block content
     div(id="upload-modal" class="modal")
         div(class="modal-background")
         div(class="modal-card")
-            form(class="box" id="review-form" method="post" action="/add-review" enctype="multipart/form-data")
+            form(class="box" id="review-form" method="post" action="/add-review-profile" enctype="multipart/form-data")
                 header(class="modal-card-head")
                     p(class="modal-card-title") Add Book Review
                 section(class="modal-card-body")
@@ -88,7 +88,6 @@ block content
                                     placeholder="What is your opinion of the book?"
                                     name="comment"
                                 )  
-
 
                 footer(class="modal-card-foot")
                     button(type="submit" class="button is-success") Add Review

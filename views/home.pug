@@ -4,12 +4,12 @@ block content
   section(class="section is-medium")
     h1(class="title") Can't decide what to read next?
     h2(class="subtitle") Check out what others have to say about their recent reads
-    form(method="get" action="/search")
+    //-form(method="get" action="/search")
         div(class="field has-addons")
             div(class="control")
                 input(class="input" type="text" placeholder="Search" name="search")
             div(class="control")
-                button(class="button is-info" type="submit") Search
+                button(class="button is-info" type="submit") Search 
     div(class="columns is-multiline")
       each book in user_books
           div(class="column is-one-third")
@@ -23,7 +23,7 @@ block content
                           div(class="media-content")
                               p(class="title is-6") #{book.creator}            
                   div(class="card-image")
-                      figure(class="image is-4by3")
+                      figure(class="image is-4by5")
                           img(src="data:" + book.bookimg.contentType + ";base64," + book.bookimg.data.toString('base64'))
                   div(class="card-content")
                       p(class="title is-4") #{book.title}

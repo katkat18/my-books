@@ -255,7 +255,7 @@ router.post('/book/:id', async(req, res, next) => {
   }
 });
 
-/* POST upload image */
+/* POST upload review from home page */
 router.post('/add-review', upload.single('book_pic'), async(req, res, next) => {
   try {
     const book = new Book({
@@ -281,4 +281,29 @@ router.post('/add-review', upload.single('book_pic'), async(req, res, next) => {
   }
 });
 
+/* POST upload review from profile page */
+router.post('/add-review-profile', upload.single('book_pic'), async(req, res, next) => {
+  try {
+    const book = new Book({
+      title: req.body.book_title,
+      author: req.body.author,
+      rating: req.body.rating,
+      comment: req.body.comment, 
+      bookimg: {
+        data: fs.readFileSync(__dirname + '/uploads/' + req.file.filename),
+        contentType: 'image/png'
+      },
+      creator: req.user.username,
+      creatorimg: {
+        data: req.user.profileimg.data,
+        contentType: req.user.profileimg.contentType
+      }
+    });
+
+    await book.save()
+    res.redirect('/profile');
+  }catch(err){
+    return next(err);
+  }
+});
 module.exports = router;

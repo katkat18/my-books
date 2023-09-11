@@ -15,3 +15,7 @@
 .form-stars > input[type="radio"] {
   display: none;
 }
+
+.expand-review {
+  display: none;
+}

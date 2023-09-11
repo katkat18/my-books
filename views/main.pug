@@ -24,7 +24,7 @@ block content
                                         p(class="title is-6") #{book.creator}
                                         //p(class="subtitle is-8") @katkat
                             div(class="card-image")
-                                figure(class="image is-4by3")
+                                figure(class="image is-4by5")
                                     img(src="data:" + book.bookimg.contentType + ";base64," + book.bookimg.data.toString('base64'))
                             div(class="card-content")
                                 p(class="title is-4") #{book.title}
@@ -87,4 +87,4 @@ block content
                 footer(class="modal-card-foot")
                     button(type="submit" class="button is-success") Add Review
                     button(type="button" class="button" id="cancel-review") Cancel               
-    h1 #{title} hello!
+    
